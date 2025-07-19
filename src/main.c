@@ -1,37 +1,40 @@
-#include <SDL3/SDL_init.h>
-#include <SDL3/SDL_render.h>
-#include <SDL3/SDL_video.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
 #include "SDL3/SDL.h"
+#include "draw.h"
 
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
-int window_width = 800;
-int window_height = 600;
+static SDL_Texture *color_buffer_texture = NULL;
 
 static bool is_running = false;
 
-static uint32_t *color_buffer = NULL;
-
 static bool initialize_window(void) {
     if(!SDL_Init(SDL_INIT_VIDEO)){
-        fprintf(stderr, "Cannot initialize SDL!");
+        fprintf(stderr, "Cannot initialize SDL!\n");
         return false;
     }
+
+    // Query SDL for the screen width and height
+    const SDL_DisplayMode *display_mode = SDL_GetCurrentDisplayMode(SDL_GetPrimaryDisplay());
+    window_width = display_mode->w;
+    window_height = display_mode->h;
 
     // SDL_SetHint(SDL_HINT_VIDEO_DRIVER, "opengles2");
     if(!SDL_CreateWindowAndRenderer("Pikuma3D", window_width, window_height, SDL_WINDOW_BORDERLESS, &window, &renderer)) {
-        fprintf(stderr, "Cannot create window and renderer!");
+        fprintf(stderr, "Cannot create window and renderer!\n");
         return false;
     }
+
+    SDL_SetWindowFullscreen(window, true);
 
     return true;
 }
 
 static void close_window(void) {
-    if(NULL == color_buffer) { free(color_buffer); }
+    SDL_SetWindowFullscreen(window, false);
+    cleanup_color_buffer();
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
@@ -39,11 +42,9 @@ static void close_window(void) {
 }
 
 static void setup(void) {
-    color_buffer = SDL_malloc(sizeof(uint32_t) * window_width * window_height);
-    if(NULL == color_buffer) {
-        fprintf(stderr, "Cannot allocate color buffer!");
-        return;
-    }
+    setup_color_buffer();
+    color_buffer_texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_BGRA32, SDL_TEXTUREACCESS_STREAMING, window_width, window_height);
+    if(!color_buffer_texture){ fprintf(stderr, "error while creating the texture!\n"); }
 }
 
 static void process_inputs(void) {
@@ -65,11 +66,22 @@ static void update(void) {
 
 }
 
+static void render_color_buffer(void) {
+    SDL_UpdateTexture(color_buffer_texture, NULL, color_buffer, (int)window_width * sizeof(uint32_t));
+    SDL_RenderTexture(renderer, color_buffer_texture, NULL, NULL);
+}
+
 static void render(void) {
-    SDL_SetRenderDrawColor(renderer, 0x15, 0x15, 0x15, 0xFF);
+    SDL_SetRenderDrawColor(renderer, 0xFF, 0x15, 0x15, 0xFF);
     SDL_RenderClear(renderer);
 
-    // ...
+    // draw
+    draw_grid(20, 0xFF0000FF);
+    draw_rectangle(10, 10, 500, 164, 0xFF6611FF);
+
+    render_color_buffer();
+    // AA BB GG RR
+    clear_color_buffer(0xFFFFFF00);
      
     SDL_RenderPresent(renderer);
 }
