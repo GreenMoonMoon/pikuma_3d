@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "SDL3/SDL.h"
 #include "draw.h"
+#include "vector.h"
 
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
@@ -11,6 +12,8 @@ static int window_width;
 static int window_height;
 
 static bool is_running = false;
+
+static Vector3 points[9 * 9 * 9];
 
 static bool initialize_window(void) {
     if(!SDL_Init(SDL_INIT_VIDEO)){
@@ -48,6 +51,15 @@ static void setup(void) {
     setup_color_buffer(window_width, window_height);
     color_buffer_texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_BGRA32, SDL_TEXTUREACCESS_STREAMING, window_width / 4, window_height / 4);
     if(!color_buffer_texture){ fprintf(stderr, "error while creating the texture!\n"); }
+
+    // build point array
+    for (int z = 0; z < 9; ++z) {
+        for (int y = 0; y < 9; ++y) {
+            for (int x = 0; x < 9; ++x) {
+                points[z * 89 + y * 9 + x] = (Vector3){x * 0.2f - 1.0f, y * 0.2f - 1.0f, z * 0.2f - 1.0f};
+            }
+        }
+    }
 }
 
 static void process_inputs(void) {
@@ -79,9 +91,10 @@ static void render(void) {
     SDL_RenderClear(renderer);
 
     // draw
-    draw_grid(20, 0xFF0000FF);
-    draw_rectangle(10, 10, 200, 100, 0xFF6611FF);
-    draw_pixel(10, 5, 0xFF001000);
+    for (int i = 0; i < 9*9*9; ++i) {
+        IVector2 coord = project_point(points[i]);
+        draw_pixel(coord.x, coord.y, 0xFF000000);
+    }
 
     render_color_buffer();
     // AA BB GG RR
@@ -92,8 +105,8 @@ static void render(void) {
 
 int main(int argc, char *argv[]){
     is_running = initialize_window();
-
     setup();
+
     while(is_running) {
         process_inputs();
         update();

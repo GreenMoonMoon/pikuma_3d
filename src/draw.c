@@ -1,9 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "draw.h"
+#include "vector.h"
 
-static int color_buffer_width = 800;
-static int color_buffer_height = 600;
+static int color_buffer_width;
+static int color_buffer_height;
 
 uint32_t *color_buffer = NULL;
 
@@ -35,9 +36,11 @@ void draw_grid(const int spacing, const uint32_t color) {
 }
 
 void draw_rectangle(const int x, const int y, const int w, const int h, const uint32_t color) {
-    for (int i = y; i < y + h; ++i) {
+    int k = y + h > color_buffer_height ? color_buffer_height : y + h;
+    int l = x + w > color_buffer_width ? color_buffer_width : x + w;
+    for (int i = y; i < k; ++i) {
         if (i < 0) { continue; }
-        for (int j = x; j < x + w; ++j) {
+        for (int j = x; j < l; ++j) {
             if (j < 0) { continue; }
             color_buffer[i * color_buffer_width + j] = color;
         }
@@ -48,4 +51,17 @@ void clear_color_buffer(const uint32_t color) {
     for (int i = 0; i < color_buffer_width * color_buffer_height; ++i) {
         color_buffer[i] = color;
     }
+}
+
+/// Map a point to its screen coordinate
+IVector2 project_point(const Vector3 point) {
+    IVector2 projected_point = {
+        (int)((point.x + 1.0f) * 0.5f * (float)color_buffer_width),
+        (int)((point.y + 1.0f) * 0.5f * (float)color_buffer_height)
+    };
+    return projected_point;
+}
+
+void debug_print_color_buffer() {
+    printf("color buffer: %d x %d\n", color_buffer_width, color_buffer_height);
 }
