@@ -18,7 +18,7 @@ void draw_rectangle(int x, int y, int w, int h, uint32_t color);
 
 void clear_color_buffer(uint32_t color);
 
-IVector2 project_point(Vector3 point);
+IVector2 project_point(Vector3 point, const float fov_factor);
 
 void debug_print_color_buffer();
 
