@@ -1,3 +1,4 @@
+#include <SDL3/SDL_timer.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -5,15 +6,8 @@
 #include "draw.h"
 #include "vector.h"
 
-#define WHITE       0xFFFFFFFF
-#define BLACK       0xFF000000
-#define DARKGREY    0xFF333333 
-#define RED         0XFFFF0000
-#define GREEN       0XFF00FF00
-#define BLUE        0XFF0000FF
-#define MAGENTA     0XFFFF00FF
-#define YELLOW      0XFFFFFF00
-#define CYAN        0XFFFF00FF
+#define TARGET_FPS 30
+#define TARGET_STEP (1000 / TARGET_FPS)
 
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
@@ -22,9 +16,14 @@ static int window_width;
 static int window_height;
 
 static bool is_running = false;
+//static double last = 0.0;
+static int fixed_last = 0;
+
 
 const float camera_fov = 260.0f;
+
 static Vector3 points[9 * 9 * 9];
+static float points_angle = 0;
 
 static bool initialize_window(void) {
     if(!SDL_Init(SDL_INIT_VIDEO)){
@@ -90,7 +89,22 @@ static void process_inputs(void) {
 }
 
 static void update(void) {
+    // calculate delta time
+    // const double now = SDL_GetPerformanceCounter();
+    // const float delta_time = (float)((now - last) / SDL_GetPerformanceFrequency());
+    const int fixed_now = SDL_GetTicks();
+    int wait = TARGET_STEP - (fixed_now - fixed_last);
+    if (wait > 0 && wait <= TARGET_STEP) {
+        SDL_Delay(wait);
+    }
+    const float delta_time = 1.0f / (float)TARGET_FPS;
 
+    // update objects
+    points_angle += delta_time;
+
+    // update last value
+    // last = now;
+    fixed_last = fixed_now;
 }
 
 static void render_color_buffer(void) {
@@ -105,6 +119,8 @@ static void render(void) {
     // draw
     for (int i = 0; i < 9*9*9; ++i) {
         Vector3 point = points[i];
+        point = rotate_y(point, points_angle);
+        point = rotate_x(point, points_angle);
         point.z -= 5.0f;
         IVector2 coord = project_point(point, camera_fov);
         draw_pixel(coord.x + 640/4, coord.y + 360/4, WHITE);

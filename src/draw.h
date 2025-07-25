@@ -4,6 +4,16 @@
 #include <stdint.h>
 #include "vector.h"
 
+#define WHITE       0xFFFFFFFF
+#define BLACK       0xFF000000
+#define DARKGREY    0xFF333333 
+#define RED         0XFFFF0000
+#define GREEN       0XFF00FF00
+#define BLUE        0XFF0000FF
+#define MAGENTA     0XFFFF00FF
+#define YELLOW      0XFFFFFF00
+#define CYAN        0XFFFF00FF
+
 extern uint32_t *color_buffer;
 
 void setup_color_buffer(int width, int height);

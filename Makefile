@@ -1,6 +1,6 @@
 build:
 	export SDL_RENDER_DRIVER="opengles2"
-	gcc -Wall -std=c17 src/*.c -lSDL3 -o pikuma3d
+	gcc -Wall -std=c17 src/*.c -lSDL3 -lm -o pikuma3d
 
 run:
 	./pikuma3d

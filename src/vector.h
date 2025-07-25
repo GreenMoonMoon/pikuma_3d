@@ -12,5 +12,11 @@ typedef struct IVector2 {
     int x, y;
 } IVector2;
 
+Vector3 rotate_x(Vector3 vector, float angle);
+
+Vector3 rotate_y(Vector3 vector, float angle);
+
+Vector3 rotate_z(Vector3 vector, float angle);
+
 #define VECTOR_PIKUMA3D_H
 #endif//VECTOR_PIKUMA3D_H
