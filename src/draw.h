@@ -1,5 +1,5 @@
-#ifndef DRAW_PIKUMA3D_H
-#define DRAW_PIKUMA3D_H
+#ifndef PIKUMA3D_DRAW_H
+#define PIKUMA3D_DRAW_H
 
 #include <stdint.h>
 #include "vector.h"
@@ -32,4 +32,4 @@ IVector2 project_point(Vector3 point, const float fov_factor);
 
 void debug_print_color_buffer();
 
-#endif//DRAW_PIKUMA3D_H
+#endif//PIKUMA3D_DRAW_H

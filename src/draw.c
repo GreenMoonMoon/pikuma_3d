@@ -56,8 +56,8 @@ void clear_color_buffer(const uint32_t color) {
 /// Map a point to its screen coordinate
 IVector2 project_point(const Vector3 point, const float fov_factor) {
     IVector2 projected_point = {
-        (int)(point.x * fov_factor / point.z),
-        (int)(point.y * fov_factor / point.z)
+        (int)(point.x * fov_factor / point.z) + (color_buffer_width / 2),
+        (int)(point.y * fov_factor / point.z) + (color_buffer_height / 2)
     };
     return projected_point;
 }

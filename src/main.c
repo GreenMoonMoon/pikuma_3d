@@ -1,10 +1,10 @@
-#include <SDL3/SDL_timer.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
 #include "SDL3/SDL.h"
 #include "draw.h"
 #include "vector.h"
+#include "geometry.h"
 
 #define TARGET_FPS 30
 #define TARGET_STEP (1000 / TARGET_FPS)
@@ -21,9 +21,12 @@ static int fixed_last = 0;
 
 
 const float camera_fov = 260.0f;
+Vector3 camera_position = {0, 0, -5.0f};
 
-static Vector3 points[9 * 9 * 9];
-static float points_angle = 0;
+// Box
+static Vector3 *box_vertices = NULL;
+//static Triangle *box_triangles = NULL;
+static Vector3 box_rotations;
 
 static bool initialize_window(void) {
     if(!SDL_Init(SDL_INIT_VIDEO)){
@@ -62,15 +65,21 @@ static void setup(void) {
     color_buffer_texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_BGRA32, SDL_TEXTUREACCESS_STREAMING, window_width / 4, window_height / 4);
     if(!color_buffer_texture){ fprintf(stderr, "error while creating the texture!\n"); }
 
-    // build point array
-    const float f = 2.0f / 9.0f;
-    for (int z = 0; z < 9; ++z) {
-        for (int y = 0; y < 9; ++y) {
-            for (int x = 0; x < 9; ++x) {
-                points[z * 89 + y * 9 + x] = (Vector3){x * f - 1.0f, y * f - 1.0f, z * f - 1.0f};
-            }
+    // copy data to mesh object
+    const int vertex_count = sizeof(cube_vertices)/sizeof(Vector3);
+    box_vertices = malloc(sizeof(cube_vertices));
+    if (NULL != box_vertices) {
+        for (int i = 0; i < vertex_count; ++i) {
+            box_vertices[i].x = cube_vertices[i].x;
+            box_vertices[i].y = cube_vertices[i].y;
+            box_vertices[i].z = cube_vertices[i].z;
         }
     }
+    box_rotations = (Vector3){0};
+}
+
+static void cleanup(void) {
+    if (NULL != box_vertices) { free(box_vertices); }
 }
 
 static void process_inputs(void) {
@@ -100,7 +109,9 @@ static void update(void) {
     const float delta_time = 1.0f / (float)TARGET_FPS;
 
     // update objects
-    points_angle += delta_time;
+    box_rotations.x += delta_time;
+    box_rotations.y += delta_time;
+    box_rotations.z += delta_time;
 
     // update last value
     // last = now;
@@ -117,13 +128,14 @@ static void render(void) {
     SDL_RenderClear(renderer);
 
     // draw
-    for (int i = 0; i < 9*9*9; ++i) {
-        Vector3 point = points[i];
-        point = rotate_y(point, points_angle);
-        point = rotate_x(point, points_angle);
-        point.z -= 5.0f;
-        IVector2 coord = project_point(point, camera_fov);
-        draw_pixel(coord.x + 640/4, coord.y + 360/4, WHITE);
+    for (int i = 0; i < 8; ++i) {
+        Vector3 point = box_vertices[i];
+        point = rotate_x(point, box_rotations.x);
+        point = rotate_y(point, box_rotations.y);
+        point = rotate_z(point, box_rotations.z);
+        point.z -= camera_position.z;
+        IVector2 coord = project_point(point, 260.0f);
+        draw_pixel(coord.x, coord.y, WHITE);
     }
 
     render_color_buffer();
@@ -142,6 +154,8 @@ int main(int argc, char *argv[]){
         update();
         render();
     }
+
+    cleanup();
 
     close_window();
 

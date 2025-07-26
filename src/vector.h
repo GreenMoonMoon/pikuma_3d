@@ -1,4 +1,5 @@
-#ifndef VECTOR_PIKUMA3D_H
+#ifndef PIKUMA3D_VECTOR_H
+#define PIKUMA3D_VECTOR_H
 
 typedef struct Vector2 {
     float x, y;
@@ -18,5 +19,4 @@ Vector3 rotate_y(Vector3 vector, float angle);
 
 Vector3 rotate_z(Vector3 vector, float angle);
 
-#define VECTOR_PIKUMA3D_H
-#endif//VECTOR_PIKUMA3D_H
+#endif//PIKUMA3D_VECTOR_H
