@@ -25,7 +25,7 @@ Vector3 camera_position = {0, 0, -5.0f};
 
 // Box
 static Vector3 *box_vertices = NULL;
-//static Triangle *box_triangles = NULL;
+static Triangle *box_triangles = NULL;
 static Vector3 box_rotations;
 
 static bool initialize_window(void) {
@@ -66,13 +66,16 @@ static void setup(void) {
     if(!color_buffer_texture){ fprintf(stderr, "error while creating the texture!\n"); }
 
     // copy data to mesh object
-    const int vertex_count = sizeof(cube_vertices)/sizeof(Vector3);
     box_vertices = malloc(sizeof(cube_vertices));
     if (NULL != box_vertices) {
-        for (int i = 0; i < vertex_count; ++i) {
-            box_vertices[i].x = cube_vertices[i].x;
-            box_vertices[i].y = cube_vertices[i].y;
-            box_vertices[i].z = cube_vertices[i].z;
+        for (int i = 0; i < CUBE_VERTEX_COUNT; ++i) {
+            box_vertices[i] = cube_vertices[i];
+        }
+    }
+    box_triangles = malloc(sizeof(cube_triangles));
+    if (NULL != box_triangles) {
+        for (int i = 0; i < CUBE_TRIANGLE_COUNT; ++i) {
+            box_triangles[i] = cube_triangles[i];
         }
     }
     box_rotations = (Vector3){0};
@@ -128,14 +131,34 @@ static void render(void) {
     SDL_RenderClear(renderer);
 
     // draw
-    for (int i = 0; i < 8; ++i) {
-        Vector3 point = box_vertices[i];
-        point = rotate_x(point, box_rotations.x);
-        point = rotate_y(point, box_rotations.y);
-        point = rotate_z(point, box_rotations.z);
-        point.z -= camera_position.z;
-        IVector2 coord = project_point(point, 260.0f);
-        draw_pixel(coord.x, coord.y, WHITE);
+    for (int i = 0; i < CUBE_TRIANGLE_COUNT; ++i) {
+        Vector3 point_a = box_vertices[box_triangles[i].a];
+        Vector3 point_b = box_vertices[box_triangles[i].b];
+        Vector3 point_c = box_vertices[box_triangles[i].c];
+
+        point_a = rotate_x(point_a, box_rotations.x);
+        point_a = rotate_y(point_a, box_rotations.y);
+        point_a = rotate_z(point_a, box_rotations.z);
+
+        point_b = rotate_x(point_b, box_rotations.x);
+        point_b = rotate_y(point_b, box_rotations.y);
+        point_b = rotate_z(point_b, box_rotations.z);
+
+        point_c = rotate_x(point_c, box_rotations.x);
+        point_c = rotate_y(point_c, box_rotations.y);
+        point_c = rotate_z(point_c, box_rotations.z);
+
+        point_a.z -= camera_position.z;
+        point_b.z -= camera_position.z;
+        point_c.z -= camera_position.z;
+
+        IVector2 coord_a = project_point(point_a, camera_fov);
+        IVector2 coord_b = project_point(point_a, camera_fov);
+        IVector2 coord_c = project_point(point_a, camera_fov);
+
+        draw_pixel(coord_a.x, coord_a.y, WHITE);
+        draw_pixel(coord_b.x, coord_b.y, WHITE);
+        draw_pixel(coord_c.x, coord_c.y, WHITE);
     }
 
     render_color_buffer();
