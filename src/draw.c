@@ -47,6 +47,27 @@ void draw_rectangle(const int x, const int y, const int w, const int h, const ui
     } 
 }
 
+void draw_line(IVector2 a, IVector2 b) {
+    // draw line algorythm
+    IVector2 min, max;
+    if (a.x < b.x) {
+        min = a;
+        max = b;
+    } else {
+        min = b;
+        max = a;
+    }
+    float m = max.y/min.y;
+    // y = mx+c
+    int j = min.y;
+    for (int i = min.x; i < max.x; ++i) {
+        int y = m * i + min.y;
+        while() {
+
+        }
+    }
+}
+
 void clear_color_buffer(const uint32_t color) {
     for (int i = 0; i < color_buffer_width * color_buffer_height; ++i) {
         color_buffer[i] = color;
