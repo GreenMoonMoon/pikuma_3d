@@ -157,9 +157,9 @@ static void render(void) {
         IVector2 coord_b = project_point(point_b, camera_fov);
         IVector2 coord_c = project_point(point_c, camera_fov);
 
-        draw_pixel(coord_a.x, coord_a.y, WHITE);
-        draw_pixel(coord_b.x, coord_b.y, WHITE);
-        draw_pixel(coord_c.x, coord_c.y, WHITE);
+        // draw_pixel(coord_a.x, coord_a.y, WHITE);
+        // draw_pixel(coord_b.x, coord_b.y, WHITE);
+        // draw_pixel(coord_c.x, coord_c.y, WHITE);
 
         draw_line(coord_a, coord_b, WHITE);
         draw_line(coord_b, coord_c, WHITE);

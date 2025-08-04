@@ -48,22 +48,20 @@ void draw_rectangle(const int x, const int y, const int w, const int h, const ui
 }
 
 void draw_line(const IVector2 a, const IVector2 b, const uint32_t color) {
-    // draw line algorithm
-    // y=mx+c
-    const int dx = a.x - b.x;
-    const int dy = a.y - b.y;
-    const float m = (float)dx / (float)dy;
+    const int dx = b.x - a.x;
+    const int dy = b.y - a.y;
 
-    if (a.x < b.x) {
-        for (int i = a.x; i < b.x; ++i) {
-            const int y = m * (i - a.x) + a.y;
-            draw_pixel(i, y, color);
-        }
-    } else {
-        for (int i = a.x; i < b.x; --i) {
-            const int y = m * (i - a.x) + a.y;
-            draw_pixel(i, y, color);
-        }
+    const int side_length = abs(dx) >= abs(dy) ? abs(dx) : abs(dy);
+    const float x_inc = (float)dx / (float)side_length;
+    const float y_inc = (float)dy / (float)side_length;
+
+    float cx = (float)a.x;
+    float cy = (float)a.y;
+
+    for (int i = 0; i < side_length; ++i) {
+        draw_pixel((int)cx, (int)cy, color);
+        cx += x_inc;
+        cy += y_inc;
     }
 }
 
