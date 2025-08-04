@@ -48,13 +48,15 @@ static bool initialize_window(void) {
 
     SDL_SetWindowFullscreen(window, true);
 
+    color_buffer_texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_BGRA32, SDL_TEXTUREACCESS_STREAMING, window_width / 4, window_height / 4);
+    SDL_SetTextureScaleMode(color_buffer_texture, SDL_SCALEMODE_NEAREST);
+    if(!color_buffer_texture){ fprintf(stderr, "error while creating the texture!\n"); }
+
     return true;
 }
 
 static void close_window(void) {
-    SDL_SetWindowFullscreen(window, false);
-    cleanup_color_buffer();
-
+    SDL_DestroyTexture(color_buffer_texture);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
@@ -62,8 +64,6 @@ static void close_window(void) {
 
 static void setup(void) {
     setup_color_buffer(window_width, window_height);
-    color_buffer_texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_BGRA32, SDL_TEXTUREACCESS_STREAMING, window_width / 4, window_height / 4);
-    if(!color_buffer_texture){ fprintf(stderr, "error while creating the texture!\n"); }
 
     // copy data to mesh object
     box_vertices = malloc(sizeof(cube_vertices));
@@ -83,6 +83,7 @@ static void setup(void) {
 
 static void cleanup(void) {
     if (NULL != box_vertices) { free(box_vertices); }
+    cleanup_color_buffer();
 }
 
 static void process_inputs(void) {
@@ -153,12 +154,16 @@ static void render(void) {
         point_c.z -= camera_position.z;
 
         IVector2 coord_a = project_point(point_a, camera_fov);
-        IVector2 coord_b = project_point(point_a, camera_fov);
-        IVector2 coord_c = project_point(point_a, camera_fov);
+        IVector2 coord_b = project_point(point_b, camera_fov);
+        IVector2 coord_c = project_point(point_c, camera_fov);
 
         draw_pixel(coord_a.x, coord_a.y, WHITE);
         draw_pixel(coord_b.x, coord_b.y, WHITE);
         draw_pixel(coord_c.x, coord_c.y, WHITE);
+
+        draw_line(coord_a, coord_b, WHITE);
+        draw_line(coord_b, coord_c, WHITE);
+        draw_line(coord_c, coord_a, WHITE);
     }
 
     render_color_buffer();
@@ -170,14 +175,13 @@ static void render(void) {
 
 int main(int argc, char *argv[]){
     is_running = initialize_window();
-    setup();
 
+    setup();
     while(is_running) {
         process_inputs();
         update();
         render();
     }
-
     cleanup();
 
     close_window();

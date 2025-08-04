@@ -26,7 +26,7 @@ void draw_grid(int spacing, uint32_t color);
 
 void draw_rectangle(int x, int y, int w, int h, uint32_t color);
 
-void draw_line(IVector2 a, IVector2 b);
+void draw_line(IVector2 a, IVector2 b, uint32_t color);
 
 void clear_color_buffer(uint32_t color);
 

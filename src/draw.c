@@ -47,25 +47,24 @@ void draw_rectangle(const int x, const int y, const int w, const int h, const ui
     } 
 }
 
-void draw_line(IVector2 a, IVector2 b) {
-    // // draw line algorythm
-    // IVector2 min, max;
-    // if (a.x < b.x) {
-    //     min = a;
-    //     max = b;
-    // } else {
-    //     min = b;
-    //     max = a;
-    // }
-    // float m = max.y/min.y;
-    // // y = mx+c
-    // int j = min.y;
-    // for (int i = min.x; i < max.x; ++i) {
-    //     int y = m * i + min.y;
-    //     while() {
-    //
-    //     }
-    // }
+void draw_line(const IVector2 a, const IVector2 b, const uint32_t color) {
+    // draw line algorithm
+    // y=mx+c
+    const int dx = a.x - b.x;
+    const int dy = a.y - b.y;
+    const float m = (float)dx / (float)dy;
+
+    if (a.x < b.x) {
+        for (int i = a.x; i < b.x; ++i) {
+            const int y = m * (i - a.x) + a.y;
+            draw_pixel(i, y, color);
+        }
+    } else {
+        for (int i = a.x; i < b.x; --i) {
+            const int y = m * (i - a.x) + a.y;
+            draw_pixel(i, y, color);
+        }
+    }
 }
 
 void clear_color_buffer(const uint32_t color) {
