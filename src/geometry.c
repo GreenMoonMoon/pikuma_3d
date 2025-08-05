@@ -40,5 +40,7 @@ Mesh generate_cube_mesh(void) {
 
     cube.triangle_count = CUBE_TRIANGLE_COUNT;
 
+    cube.transform = (Transform){ {0}, {1.0f}, {0}};
+
     return cube;
 }

@@ -7,11 +7,19 @@ typedef struct Triangle {
     int a, b, c;
 } Triangle;
 
+typedef struct Transform {
+    Vector3 position;
+    Vector3 size;
+    Vector3 rotation;
+} Transform;
+
 // Uses stb_ds dynamic arrays, which hold length and capacity information.
 typedef struct Mesh {
     Vector3 *vertices_list;
     Triangle *triangles_list;
     int triangle_count;
+
+    Transform transform;
 } Mesh;
 
 void free_mesh(Mesh mesh);

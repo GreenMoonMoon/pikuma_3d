@@ -25,7 +25,6 @@ Vector3 camera_position = {0, 0, -5.0f};
 
 // Box
 static Mesh mesh;
-static Vector3 box_rotations;
 
 static bool initialize_window(void) {
     if(!SDL_Init(SDL_INIT_VIDEO)){
@@ -65,7 +64,6 @@ static void setup(void) {
     setup_color_buffer(window_width, window_height);
 
     mesh = generate_cube_mesh();
-    box_rotations = (Vector3){0};
 }
 
 static void cleanup(void) {
@@ -100,9 +98,9 @@ static void update(void) {
     const float delta_time = 1.0f / (float)TARGET_FPS;
 
     // update objects
-    box_rotations.x += delta_time;
-    box_rotations.y += delta_time;
-    box_rotations.z += delta_time;
+    mesh.transform.rotation.x += delta_time;
+    mesh.transform.rotation.y += delta_time;
+    mesh.transform.rotation.z += delta_time;
 
     // update last value
     // last = now;
@@ -124,17 +122,17 @@ static void render(void) {
         Vector3 point_b = mesh.vertices_list[mesh.triangles_list[i].b];
         Vector3 point_c = mesh.vertices_list[mesh.triangles_list[i].c];
 
-        point_a = rotate_x(point_a, box_rotations.x);
-        point_a = rotate_y(point_a, box_rotations.y);
-        point_a = rotate_z(point_a, box_rotations.z);
+        point_a = rotate_x(point_a, mesh.transform.rotation.x);
+        point_a = rotate_y(point_a, mesh.transform.rotation.y);
+        point_a = rotate_z(point_a, mesh.transform.rotation.z);
 
-        point_b = rotate_x(point_b, box_rotations.x);
-        point_b = rotate_y(point_b, box_rotations.y);
-        point_b = rotate_z(point_b, box_rotations.z);
+        point_b = rotate_x(point_b, mesh.transform.rotation.x);
+        point_b = rotate_y(point_b, mesh.transform.rotation.y);
+        point_b = rotate_z(point_b, mesh.transform.rotation.z);
 
-        point_c = rotate_x(point_c, box_rotations.x);
-        point_c = rotate_y(point_c, box_rotations.y);
-        point_c = rotate_z(point_c, box_rotations.z);
+        point_c = rotate_x(point_c, mesh.transform.rotation.x);
+        point_c = rotate_y(point_c, mesh.transform.rotation.y);
+        point_c = rotate_z(point_c, mesh.transform.rotation.z);
 
         point_a.z -= camera_position.z;
         point_b.z -= camera_position.z;
