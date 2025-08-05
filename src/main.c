@@ -24,8 +24,7 @@ const float camera_fov = 260.0f;
 Vector3 camera_position = {0, 0, -5.0f};
 
 // Box
-static Vector3 *box_vertices = NULL;
-static Triangle *box_triangles = NULL;
+static Mesh mesh;
 static Vector3 box_rotations;
 
 static bool initialize_window(void) {
@@ -65,24 +64,12 @@ static void close_window(void) {
 static void setup(void) {
     setup_color_buffer(window_width, window_height);
 
-    // copy data to mesh object
-    box_vertices = malloc(sizeof(cube_vertices));
-    if (NULL != box_vertices) {
-        for (int i = 0; i < CUBE_VERTEX_COUNT; ++i) {
-            box_vertices[i] = cube_vertices[i];
-        }
-    }
-    box_triangles = malloc(sizeof(cube_triangles));
-    if (NULL != box_triangles) {
-        for (int i = 0; i < CUBE_TRIANGLE_COUNT; ++i) {
-            box_triangles[i] = cube_triangles[i];
-        }
-    }
+    mesh = generate_cube_mesh();
     box_rotations = (Vector3){0};
 }
 
 static void cleanup(void) {
-    if (NULL != box_vertices) { free(box_vertices); }
+    free_mesh(mesh);
     cleanup_color_buffer();
 }
 
@@ -132,10 +119,10 @@ static void render(void) {
     SDL_RenderClear(renderer);
 
     // draw
-    for (int i = 0; i < CUBE_TRIANGLE_COUNT; ++i) {
-        Vector3 point_a = box_vertices[box_triangles[i].a];
-        Vector3 point_b = box_vertices[box_triangles[i].b];
-        Vector3 point_c = box_vertices[box_triangles[i].c];
+    for (int i = 0; i < mesh.triangle_count; ++i) {
+        Vector3 point_a = mesh.vertices_list[mesh.triangles_list[i].a];
+        Vector3 point_b = mesh.vertices_list[mesh.triangles_list[i].b];
+        Vector3 point_c = mesh.vertices_list[mesh.triangles_list[i].c];
 
         point_a = rotate_x(point_a, box_rotations.x);
         point_a = rotate_y(point_a, box_rotations.y);
@@ -153,13 +140,9 @@ static void render(void) {
         point_b.z -= camera_position.z;
         point_c.z -= camera_position.z;
 
-        IVector2 coord_a = project_point(point_a, camera_fov);
-        IVector2 coord_b = project_point(point_b, camera_fov);
-        IVector2 coord_c = project_point(point_c, camera_fov);
-
-        // draw_pixel(coord_a.x, coord_a.y, WHITE);
-        // draw_pixel(coord_b.x, coord_b.y, WHITE);
-        // draw_pixel(coord_c.x, coord_c.y, WHITE);
+        const IVector2 coord_a = project_point(point_a, camera_fov);
+        const IVector2 coord_b = project_point(point_b, camera_fov);
+        const IVector2 coord_c = project_point(point_c, camera_fov);
 
         draw_line(coord_a, coord_b, WHITE);
         draw_line(coord_b, coord_c, WHITE);
