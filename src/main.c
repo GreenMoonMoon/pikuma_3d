@@ -5,7 +5,6 @@
 #include "draw.h"
 #include "vector.h"
 #include "geometry.h"
-#include "obj_parser.h"
 
 #define TARGET_FPS 30
 #define TARGET_STEP (1000 / TARGET_FPS)

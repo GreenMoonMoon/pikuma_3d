@@ -56,6 +56,8 @@ static size_t read_vector3(const char *buffer, Vector3 *vector) {
 }
 
 static void read_file(const char *filename) {
+#define ADV_NEXT_SPACE() {do { ++i; } while (buffer[i] != '\n');}
+
     FILE *file = fopen(filename, "rb");
     if (NULL == file) {
         fprintf(stderr, "Error while opening %s!", filename);
@@ -86,12 +88,12 @@ static void read_file(const char *filename) {
     while (++i < read_size) {
         switch (buffer[i]) {
             case '#': // comment
-                do { ++i; } while (buffer[i] != '\n'); // advance to the next line
+                ADV_NEXT_SPACE();
                 break;
             case 'o': // object
                 i++; // advance one white space
                 // TODO: handle retrieving the name
-                do { ++i; } while (buffer[i] != '\n'); // advance to the next line
+                ADV_NEXT_SPACE();
                 break;
             case 'v':
                 i++;
@@ -114,6 +116,20 @@ static void read_file(const char *filename) {
                 break;
             case 's': break;
             case 'f': // faces
+                i+=2;
+                // f (v)/(vt)/(vn)
+                int vertex_index = 0;
+                int vertex_uv = 0;
+                int vertex_normal = 0;
+                vertex_index = atoi(&buffer[i]); i++;
+                if (buffer[i] == '\\' && !buffer[i + 1] == '\\') {
+                    vertex_uv = atoi(&buffer[i++]);
+                    i++;
+                }
+                if (buffer[i] == '\\' && !buffer[i + 1] == '\\') {
+                    vertex_normal = atoi(&buffer[i++]);
+                    i++;
+                }
 
                 break;
             default: break;
