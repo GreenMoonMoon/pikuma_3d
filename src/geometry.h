@@ -34,4 +34,6 @@ void free_mesh(Mesh mesh);
 
 Mesh generate_cube_mesh(void);
 
+Mesh load_obj(const char *filename);
+
 #endif//PIKUMA3D_GEOMETRY_H

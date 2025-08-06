@@ -63,7 +63,8 @@ static void close_window(void) {
 static void setup(void) {
     setup_color_buffer(window_width, window_height);
 
-    mesh = generate_cube_mesh();
+    // mesh = generate_cube_mesh();
+    mesh = load_obj("../assets/meshes/monkey.obj");
 }
 
 static void cleanup(void) {
@@ -99,8 +100,8 @@ static void update(void) {
 
     // update objects
     mesh.transform.rotation.x += delta_time;
-    mesh.transform.rotation.y += delta_time;
-    mesh.transform.rotation.z += delta_time;
+    mesh.transform.rotation.y += delta_time * 2.0f;
+    mesh.transform.rotation.z += delta_time * 0.5f;
 
     // update last value
     // last = now;

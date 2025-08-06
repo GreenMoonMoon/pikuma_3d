@@ -4,6 +4,8 @@
 #include "geometry.h"
 #define STB_DS_IMPLEMENTATION
 #include "external/stb_ds.h"
+#define FAST_OBJ_IMPLEMENTATION
+#include "external/fast_obj.h"
 
 #define CUBE_VERTEX_COUNT 8
 #define CUBE_TRIANGLE_COUNT 12
@@ -43,4 +45,44 @@ Mesh generate_cube_mesh(void) {
     cube.transform = (Transform){ {0}, {1.0f}, {0}};
 
     return cube;
+}
+
+Mesh load_obj(const char* filename) {
+    fastObjMesh *fmesh = fast_obj_read(filename);
+
+    Mesh mesh = {0};
+
+    arrsetlen(mesh.vertices_list, fmesh->position_count);
+    for (int i = 0; i < fmesh->position_count; ++i) {
+        mesh.vertices_list[i] = (Vertex){
+            .position = (Vector3){
+                .x = fmesh->positions[i * 3],
+                .y = fmesh->positions[i * 3 + 1],
+                .z = fmesh->positions[i * 3 + 2]
+            },
+            // .color = fmesh->colors[i]
+        };
+    }
+
+    arrsetlen(mesh.triangles_list, fmesh->face_count);
+    mesh.triangle_count = fmesh->face_count;
+    int index = 0;
+    for (int i = 0; i < fmesh->face_count; ++i) {
+        mesh.triangles_list[i].a = fmesh->indices[index].p;
+        mesh.triangles_list[i].b = fmesh->indices[index + 1].p;
+        mesh.triangles_list[i].c = fmesh->indices[index + 2].p;
+
+        // assume all faces are triangles.
+        // TODO: implement a triangulation algorithm for non-triangular faces
+        index += fmesh->face_vertices[i];
+    };
+
+    // mesh.triangle_count = ;
+    mesh.transform = (Transform){
+        .position = (Vector3){0},
+        .size = (Vector3){1.0f},
+        .rotation = (Vector3){0}
+    };
+
+    return mesh;
 }
