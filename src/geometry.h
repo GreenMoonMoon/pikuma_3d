@@ -2,6 +2,14 @@
 #define PIKUMA3D_GEOMETRY_H
 
 #include "vector.h"
+#include "stdint.h"
+
+typedef uint32_t Color;
+
+typedef struct Vertex {
+    Vector3 position;
+    Color color;
+} Vertex;
 
 typedef struct Triangle {
     int a, b, c;
@@ -15,7 +23,7 @@ typedef struct Transform {
 
 // Uses stb_ds dynamic arrays, which hold length and capacity information.
 typedef struct Mesh {
-    Vector3 *vertices_list;
+    Vertex *vertices_list;
     Triangle *triangles_list;
     int triangle_count;
 

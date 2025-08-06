@@ -7,15 +7,15 @@
 
 #define CUBE_VERTEX_COUNT 8
 #define CUBE_TRIANGLE_COUNT 12
-const Vector3 cube_vertices[CUBE_VERTEX_COUNT] = {
-    {-0.5f, -0.5f, -0.5f},
-    {0.5f, -0.5f, -0.5f},
-    {0.5f, 0.5f, -0.5f},
-    {-0.5f, 0.5f, -0.5f},
-    {-0.5f, -0.5f, 0.5f},
-    {0.5f, -0.5f, 0.5f},
-    {0.5f, 0.5f, 0.5f},
-    {-0.5f, 0.5f, 0.5f},
+const Vertex cube_vertices[CUBE_VERTEX_COUNT] = {
+    {{-0.5f, -0.5f, -0.5f}, 0xFF0FFFFF},
+    {{0.5f, -0.5f, -0.5f}, 0xFFFFFFFF},
+    {{0.5f, 0.5f, -0.5f}, 0xFFFFFFFF},
+    {{-0.5f, 0.5f, -0.5f}, 0xFFFFFFFF},
+    {{-0.5f, -0.5f, 0.5f}, 0xFFFFFFFF},
+    {{0.5f, -0.5f, 0.5f}, 0xFFFFFFFF},
+    {{0.5f, 0.5f, 0.5f}, 0xFFFFFFFF},
+    {{-0.5f, 0.5f, 0.5f}, 0xFFFFFFFF},
 };
 const Triangle cube_triangles[CUBE_TRIANGLE_COUNT] = {
     {0, 1, 2}, {2, 3, 0},

@@ -5,6 +5,7 @@
 #include "draw.h"
 #include "vector.h"
 #include "geometry.h"
+#include "obj_parser.h"
 
 #define TARGET_FPS 30
 #define TARGET_STEP (1000 / TARGET_FPS)
@@ -118,9 +119,9 @@ static void render(void) {
 
     // draw
     for (int i = 0; i < mesh.triangle_count; ++i) {
-        Vector3 point_a = mesh.vertices_list[mesh.triangles_list[i].a];
-        Vector3 point_b = mesh.vertices_list[mesh.triangles_list[i].b];
-        Vector3 point_c = mesh.vertices_list[mesh.triangles_list[i].c];
+        Vector3 point_a = mesh.vertices_list[mesh.triangles_list[i].a].position;
+        Vector3 point_b = mesh.vertices_list[mesh.triangles_list[i].b].position;
+        Vector3 point_c = mesh.vertices_list[mesh.triangles_list[i].c].position;
 
         point_a = rotate_x(point_a, mesh.transform.rotation.x);
         point_a = rotate_y(point_a, mesh.transform.rotation.y);
@@ -142,9 +143,10 @@ static void render(void) {
         const IVector2 coord_b = project_point(point_b, camera_fov);
         const IVector2 coord_c = project_point(point_c, camera_fov);
 
-        draw_line(coord_a, coord_b, WHITE);
-        draw_line(coord_b, coord_c, WHITE);
-        draw_line(coord_c, coord_a, WHITE);
+        Color color = mesh.vertices_list[0].color;
+        draw_line(coord_a, coord_b, color);
+        draw_line(coord_b, coord_c, color);
+        draw_line(coord_c, coord_a, color);
     }
 
     render_color_buffer();

@@ -16,6 +16,7 @@ target_sources(pikuma3d PRIVATE
         src/draw.c
         src/vector.c
         src/geometry.c
+        src/obj_parser.c
 )
 target_link_libraries(pikuma3d PRIVATE SDL3::SDL3)
 
@@ -26,3 +27,5 @@ if(WIN32)
             VERBATIM
     )
 endif()
+
+add_subdirectory(test)
