@@ -37,6 +37,16 @@ float vec2_dot(const Vec2 a, const Vec2 b) {
     return a.x * b.x + a.y * b.y;
 }
 
+Vec2 vec2_normalized(const Vec2 vec) {
+    return vec2_divide_scalar(vec, vec2_length(vec));
+}
+
+Vec2 vec2_normalize(Vec2* vec) {
+    const float len = vec2_length(*vec);
+    vec->x /= len;
+    vec->y /= len;
+}
+
 Vec3 vec3_rotate_x(const Vec3 vec, const float angle) {
     return (Vec3){
         vec.x,
@@ -102,4 +112,15 @@ Vec3 vec3_cross(const Vec3 a, const Vec3 b) {
 
 float vec3_dot(const Vec3 a, const Vec3 b) {
     return a.x * b.x + a.y * b.y + a.z * b.z;
+}
+
+Vec3 vec3_normalized(const Vec3 vec) {
+    return vec3_divide_scalar(vec, vec3_length(vec));
+}
+
+Vec3 vec3_normalize(Vec3* vec) {
+    const float len = vec3_length(*vec);
+    vec->x /= len;
+    vec->y /= len;
+    vec->z /= len;
 }

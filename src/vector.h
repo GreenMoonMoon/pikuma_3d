@@ -31,6 +31,10 @@ float vec2_length(Vec2 vec);
 
 float vec2_dot(Vec2 a, Vec2 b);
 
+Vec2 vec2_normalized(Vec2 vec);
+
+Vec2 vec2_normalize(Vec2 *vec);
+
 Vec3 vec3_rotate_x(Vec3 vec, float angle);
 
 Vec3 vec3_rotate_y(Vec3 vec, float angle);
@@ -56,5 +60,9 @@ float vec3_length(Vec3 vec);
 Vec3 vec3_cross(Vec3 a, Vec3 b);
 
 float vec3_dot(Vec3 a, Vec3 b);
+
+Vec3 vec3_normalized(Vec3 vec);
+
+Vec3 vec3_normalize(Vec3 *vec);
 
 #endif//PIKUMA3D_VECTOR_H

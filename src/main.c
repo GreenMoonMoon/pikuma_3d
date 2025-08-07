@@ -65,7 +65,7 @@ static void setup(void) {
     setup_color_buffer(window_width, window_height);
 
     // mesh = generate_cube_mesh();
-    mesh = load_obj("../assets/meshes/monkey.obj");
+    mesh = load_obj("../assets/meshes/cube.obj");
 }
 
 static void cleanup(void) {
@@ -100,9 +100,9 @@ static void update(void) {
     const float delta_time = 1.0f / (float)TARGET_FPS;
 
     // update objects
-    mesh.transform.rotation.x += delta_time * 0.1f;
-    mesh.transform.rotation.y += delta_time * 0.2f;
-    mesh.transform.rotation.z += delta_time * 0.05f;
+    mesh.transform.rotation.x += delta_time * 0.5f;
+    mesh.transform.rotation.y += delta_time * 1.0f;
+    mesh.transform.rotation.z += delta_time * 0.25f;
 
     // update last value
     // last = now;
@@ -129,13 +129,14 @@ static void render(void) {
         }
         // Cull
         Vec3 normal = vec3_cross(vec3_subtract(transformed_point[1], transformed_point[0]), vec3_subtract(transformed_point[2], transformed_point[0]));
-        Vec3 camera_direction = {0.0f, 0.0f, -1.0f};
+        // Vec3 camera_direction = {0.0f, 0.0f, -1.0f};
+        Vec3 camera_direction = vec3_subtract(camera_position, transformed_point[0]);
         if (vec3_dot(normal, camera_direction) <= 0) { continue; }
 
         // Project
         IVec2 projected_points[3];
         for (int j = 0; j < 3; ++j) {
-            transformed_point[j].z -= camera_position.z;
+            transformed_point[j].z += 5.0f;
             projected_points[j] = project_point(transformed_point[j], camera_fov);
         }
 
@@ -147,7 +148,7 @@ static void render(void) {
     render_color_buffer();
     // AA BB GG RR
     clear_color_buffer(DARKGREY);
-     
+
     SDL_RenderPresent(renderer);
 }
 
