@@ -14,6 +14,8 @@
 #define YELLOW      0XFFFFFF00
 #define CYAN        0XFFFF00FF
 
+struct Vertex;
+
 extern uint32_t *color_buffer;
 
 void setup_color_buffer(int width, int height);
@@ -28,9 +30,11 @@ void draw_rectangle(int x, int y, int w, int h, uint32_t color);
 
 void draw_line(IVec2 a, IVec2 b, uint32_t color);
 
+void draw_triangle(IVec2 a, IVec2 b, IVec2 c, uint32_t color);
+
 void clear_color_buffer(uint32_t color);
 
-IVec2 project_point(Vec3 point, const float fov_factor);
+IVec2 project_point(Vec3 point, float fov_factor);
 
 void debug_print_color_buffer();
 

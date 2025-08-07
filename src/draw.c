@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "draw.h"
 #include "vector.h"
+#include "geometry.h"
 
 static int color_buffer_width;
 static int color_buffer_height;
@@ -63,6 +64,12 @@ void draw_line(const IVec2 a, const IVec2 b, const uint32_t color) {
         cx += x_inc;
         cy += y_inc;
     }
+}
+
+void draw_triangle(const IVec2 a, const IVec2 b, const IVec2 c, const uint32_t color) {
+    draw_line(a, b, color);
+    draw_line(b, c, color);
+    draw_line(c, a, color);
 }
 
 void clear_color_buffer(const uint32_t color) {

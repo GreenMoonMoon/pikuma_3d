@@ -99,9 +99,9 @@ static void update(void) {
     const float delta_time = 1.0f / (float)TARGET_FPS;
 
     // update objects
-    mesh.transform.rotation.x += delta_time;
-    mesh.transform.rotation.y += delta_time * 2.0f;
-    mesh.transform.rotation.z += delta_time * 0.5f;
+    mesh.transform.rotation.x += delta_time * 0.1f;
+    mesh.transform.rotation.y += delta_time * 0.2f;
+    mesh.transform.rotation.z += delta_time * 0.05f;
 
     // update last value
     // last = now;
@@ -119,10 +119,12 @@ static void render(void) {
 
     // draw
     for (int i = 0; i < mesh.triangle_count; ++i) {
+        // Get vertex positions
         Vec3 point_a = mesh.vertices_list[mesh.triangles_list[i].a].position;
         Vec3 point_b = mesh.vertices_list[mesh.triangles_list[i].b].position;
         Vec3 point_c = mesh.vertices_list[mesh.triangles_list[i].c].position;
 
+        // Apply mesh transform
         point_a = vec3_rotate_x(point_a, mesh.transform.rotation.x);
         point_a = vec3_rotate_y(point_a, mesh.transform.rotation.y);
         point_a = vec3_rotate_z(point_a, mesh.transform.rotation.z);
@@ -135,6 +137,12 @@ static void render(void) {
         point_c = vec3_rotate_y(point_c, mesh.transform.rotation.y);
         point_c = vec3_rotate_z(point_c, mesh.transform.rotation.z);
 
+        // Cull
+        Vec3 normal = vec3_cross(vec3_subtract(point_b, point_a), vec3_subtract(point_c, point_a));
+        Vec3 camera_direction = {0.0f, 0.0f, -1.0f};
+        if (vec3_dot(normal, camera_direction) <= 0) { continue; }
+
+        // Project
         point_a.z -= camera_position.z;
         point_b.z -= camera_position.z;
         point_c.z -= camera_position.z;
@@ -143,10 +151,9 @@ static void render(void) {
         const IVec2 coord_b = project_point(point_b, camera_fov);
         const IVec2 coord_c = project_point(point_c, camera_fov);
 
+        // draw
         Color color = mesh.vertices_list[0].color;
-        draw_line(coord_a, coord_b, color);
-        draw_line(coord_b, coord_c, color);
-        draw_line(coord_c, coord_a, color);
+        draw_triangle(coord_a, coord_b, coord_c, color);
     }
 
     render_color_buffer();

@@ -33,6 +33,10 @@ float vec2_length(const Vec2 vec) {
     return sqrtf(vec2_length_squared(vec));
 }
 
+float vec2_dot(const Vec2 a, const Vec2 b) {
+    return a.x * b.x + a.y * b.y;
+}
+
 Vec3 vec3_rotate_x(const Vec3 vec, const float angle) {
     return (Vec3){
         vec.x,

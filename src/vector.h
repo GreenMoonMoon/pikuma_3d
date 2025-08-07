@@ -29,6 +29,8 @@ float vec2_length_squared(Vec2 vec);
 
 float vec2_length(Vec2 vec);
 
+float vec2_dot(Vec2 a, Vec2 b);
+
 Vec3 vec3_rotate_x(Vec3 vec, float angle);
 
 Vec3 vec3_rotate_y(Vec3 vec, float angle);
