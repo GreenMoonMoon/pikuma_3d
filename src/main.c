@@ -5,6 +5,7 @@
 #include "draw.h"
 #include "vector.h"
 #include "geometry.h"
+#include "external/stb_ds.h"
 
 #define TARGET_FPS 30
 #define TARGET_STEP (1000 / TARGET_FPS)
@@ -118,42 +119,29 @@ static void render(void) {
     SDL_RenderClear(renderer);
 
     // draw
-    for (int i = 0; i < mesh.triangle_count; ++i) {
-        // Get vertex positions
-        Vec3 point_a = mesh.vertices_list[mesh.triangles_list[i].a].position;
-        Vec3 point_b = mesh.vertices_list[mesh.triangles_list[i].b].position;
-        Vec3 point_c = mesh.vertices_list[mesh.triangles_list[i].c].position;
-
-        // Apply mesh transform
-        point_a = vec3_rotate_x(point_a, mesh.transform.rotation.x);
-        point_a = vec3_rotate_y(point_a, mesh.transform.rotation.y);
-        point_a = vec3_rotate_z(point_a, mesh.transform.rotation.z);
-
-        point_b = vec3_rotate_x(point_b, mesh.transform.rotation.x);
-        point_b = vec3_rotate_y(point_b, mesh.transform.rotation.y);
-        point_b = vec3_rotate_z(point_b, mesh.transform.rotation.z);
-
-        point_c = vec3_rotate_x(point_c, mesh.transform.rotation.x);
-        point_c = vec3_rotate_y(point_c, mesh.transform.rotation.y);
-        point_c = vec3_rotate_z(point_c, mesh.transform.rotation.z);
-
+    for (int i = 0; i < arrlen(mesh.triangles_list); ++i) {
+        Vec3 transformed_point[3];
+        for (int j = 0; j < 3; ++j) {
+            transformed_point[j] = mesh.vertices_list[mesh.triangles_list[i].raw[j]].position;
+            transformed_point[j] = vec3_rotate_x(transformed_point[j], mesh.transform.rotation.x);
+            transformed_point[j] = vec3_rotate_y(transformed_point[j], mesh.transform.rotation.y);
+            transformed_point[j] = vec3_rotate_z(transformed_point[j], mesh.transform.rotation.z);
+        }
         // Cull
-        Vec3 normal = vec3_cross(vec3_subtract(point_b, point_a), vec3_subtract(point_c, point_a));
+        Vec3 normal = vec3_cross(vec3_subtract(transformed_point[1], transformed_point[0]), vec3_subtract(transformed_point[2], transformed_point[0]));
         Vec3 camera_direction = {0.0f, 0.0f, -1.0f};
         if (vec3_dot(normal, camera_direction) <= 0) { continue; }
 
         // Project
-        point_a.z -= camera_position.z;
-        point_b.z -= camera_position.z;
-        point_c.z -= camera_position.z;
-
-        const IVec2 coord_a = project_point(point_a, camera_fov);
-        const IVec2 coord_b = project_point(point_b, camera_fov);
-        const IVec2 coord_c = project_point(point_c, camera_fov);
+        IVec2 projected_points[3];
+        for (int j = 0; j < 3; ++j) {
+            transformed_point[j].z -= camera_position.z;
+            projected_points[j] = project_point(transformed_point[j], camera_fov);
+        }
 
         // draw
-        Color color = mesh.vertices_list[0].color;
-        draw_triangle(coord_a, coord_b, coord_c, color);
+        const Color color = mesh.vertices_list[0].color;
+        draw_triangle(projected_points[0], projected_points[1], projected_points[2], color);
     }
 
     render_color_buffer();

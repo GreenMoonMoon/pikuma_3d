@@ -40,8 +40,6 @@ Mesh generate_cube_mesh(void) {
     arrsetlen(cube.triangles_list, CUBE_TRIANGLE_COUNT);
     memcpy(cube.triangles_list, cube_triangles, sizeof cube_triangles);
 
-    cube.triangle_count = CUBE_TRIANGLE_COUNT;
-
     cube.transform = (Transform){ {0}, {1.0f}, {0}};
 
     return cube;
@@ -65,7 +63,6 @@ Mesh load_obj(const char* filename) {
     }
 
     arrsetlen(mesh.triangles_list, fmesh->face_count);
-    mesh.triangle_count = fmesh->face_count;
     int index = 0;
     for (int i = 0; i < fmesh->face_count; ++i) {
         mesh.triangles_list[i].a = fmesh->indices[index].p;

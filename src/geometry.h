@@ -12,7 +12,10 @@ typedef struct Vertex {
 } Vertex;
 
 typedef struct Triangle {
-    int a, b, c;
+    union {
+        struct { int a, b, c; };
+        int raw[3];
+    };
 } Triangle;
 
 typedef struct Transform {
@@ -25,7 +28,6 @@ typedef struct Transform {
 typedef struct Mesh {
     Vertex *vertices_list;
     Triangle *triangles_list;
-    int triangle_count;
 
     Transform transform;
 } Mesh;
