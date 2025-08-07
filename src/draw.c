@@ -47,7 +47,7 @@ void draw_rectangle(const int x, const int y, const int w, const int h, const ui
     } 
 }
 
-void draw_line(const IVector2 a, const IVector2 b, const uint32_t color) {
+void draw_line(const IVec2 a, const IVec2 b, const uint32_t color) {
     const int dx = b.x - a.x;
     const int dy = b.y - a.y;
 
@@ -72,8 +72,8 @@ void clear_color_buffer(const uint32_t color) {
 }
 
 /// Map a point to its screen coordinate
-IVector2 project_point(const Vector3 point, const float fov_factor) {
-    IVector2 projected_point = {
+IVec2 project_point(const Vec3 point, const float fov_factor) {
+    IVec2 projected_point = {
         (int)(point.x * fov_factor / point.z) + (color_buffer_width / 2),
         (int)(point.y * fov_factor / point.z) + (color_buffer_height / 2)
     };

@@ -7,7 +7,7 @@
 typedef uint32_t Color;
 
 typedef struct Vertex {
-    Vector3 position;
+    Vec3 position;
     Color color;
 } Vertex;
 
@@ -16,9 +16,9 @@ typedef struct Triangle {
 } Triangle;
 
 typedef struct Transform {
-    Vector3 position;
-    Vector3 size;
-    Vector3 rotation;
+    Vec3 position;
+    Vec3 size;
+    Vec3 rotation;
 } Transform;
 
 // Uses stb_ds dynamic arrays, which hold length and capacity information.

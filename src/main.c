@@ -21,7 +21,7 @@ static int fixed_last = 0;
 
 
 const float camera_fov = 260.0f;
-Vector3 camera_position = {0, 0, -5.0f};
+Vec3 camera_position = {0, 0, -5.0f};
 
 // Box
 static Mesh mesh;
@@ -119,29 +119,29 @@ static void render(void) {
 
     // draw
     for (int i = 0; i < mesh.triangle_count; ++i) {
-        Vector3 point_a = mesh.vertices_list[mesh.triangles_list[i].a].position;
-        Vector3 point_b = mesh.vertices_list[mesh.triangles_list[i].b].position;
-        Vector3 point_c = mesh.vertices_list[mesh.triangles_list[i].c].position;
+        Vec3 point_a = mesh.vertices_list[mesh.triangles_list[i].a].position;
+        Vec3 point_b = mesh.vertices_list[mesh.triangles_list[i].b].position;
+        Vec3 point_c = mesh.vertices_list[mesh.triangles_list[i].c].position;
 
-        point_a = rotate_x(point_a, mesh.transform.rotation.x);
-        point_a = rotate_y(point_a, mesh.transform.rotation.y);
-        point_a = rotate_z(point_a, mesh.transform.rotation.z);
+        point_a = vec3_rotate_x(point_a, mesh.transform.rotation.x);
+        point_a = vec3_rotate_y(point_a, mesh.transform.rotation.y);
+        point_a = vec3_rotate_z(point_a, mesh.transform.rotation.z);
 
-        point_b = rotate_x(point_b, mesh.transform.rotation.x);
-        point_b = rotate_y(point_b, mesh.transform.rotation.y);
-        point_b = rotate_z(point_b, mesh.transform.rotation.z);
+        point_b = vec3_rotate_x(point_b, mesh.transform.rotation.x);
+        point_b = vec3_rotate_y(point_b, mesh.transform.rotation.y);
+        point_b = vec3_rotate_z(point_b, mesh.transform.rotation.z);
 
-        point_c = rotate_x(point_c, mesh.transform.rotation.x);
-        point_c = rotate_y(point_c, mesh.transform.rotation.y);
-        point_c = rotate_z(point_c, mesh.transform.rotation.z);
+        point_c = vec3_rotate_x(point_c, mesh.transform.rotation.x);
+        point_c = vec3_rotate_y(point_c, mesh.transform.rotation.y);
+        point_c = vec3_rotate_z(point_c, mesh.transform.rotation.z);
 
         point_a.z -= camera_position.z;
         point_b.z -= camera_position.z;
         point_c.z -= camera_position.z;
 
-        const IVector2 coord_a = project_point(point_a, camera_fov);
-        const IVector2 coord_b = project_point(point_b, camera_fov);
-        const IVector2 coord_c = project_point(point_c, camera_fov);
+        const IVec2 coord_a = project_point(point_a, camera_fov);
+        const IVec2 coord_b = project_point(point_b, camera_fov);
+        const IVec2 coord_c = project_point(point_c, camera_fov);
 
         Color color = mesh.vertices_list[0].color;
         draw_line(coord_a, coord_b, color);

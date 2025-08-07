@@ -26,11 +26,11 @@ void draw_grid(int spacing, uint32_t color);
 
 void draw_rectangle(int x, int y, int w, int h, uint32_t color);
 
-void draw_line(IVector2 a, IVector2 b, uint32_t color);
+void draw_line(IVec2 a, IVec2 b, uint32_t color);
 
 void clear_color_buffer(uint32_t color);
 
-IVector2 project_point(Vector3 point, const float fov_factor);
+IVec2 project_point(Vec3 point, const float fov_factor);
 
 void debug_print_color_buffer();
 

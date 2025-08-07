@@ -55,7 +55,7 @@ Mesh load_obj(const char* filename) {
     arrsetlen(mesh.vertices_list, fmesh->position_count);
     for (int i = 0; i < fmesh->position_count; ++i) {
         mesh.vertices_list[i] = (Vertex){
-            .position = (Vector3){
+            .position = (Vec3){
                 .x = fmesh->positions[i * 3],
                 .y = fmesh->positions[i * 3 + 1],
                 .z = fmesh->positions[i * 3 + 2]
@@ -79,9 +79,9 @@ Mesh load_obj(const char* filename) {
 
     // mesh.triangle_count = ;
     mesh.transform = (Transform){
-        .position = (Vector3){0},
-        .size = (Vector3){1.0f},
-        .rotation = (Vector3){0}
+        .position = (Vec3){0},
+        .size = (Vec3){1.0f},
+        .rotation = (Vec3){0}
     };
 
     return mesh;
